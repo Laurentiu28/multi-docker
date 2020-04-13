@@ -1,0 +1,20 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t laurentiulbg/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true laurentiulbg/react-test npm test
+
+after_success:
+  - docker build -t laurentiulbg/multi-client ./client
+  - docker build -t laurentiulbg/multi-nginx ./nginx
+  - docker build -t laurentiulbg/multi-server ./server
+  - docker build -t laurentiulbg/multi-worker ./worker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push laurentiulbg/multi-client
+  - docker push laurentiulbg/multi-nginx
+  - docker push laurentiulbg/multi-server
+  - docker push laurentiulbg/multi-worker
