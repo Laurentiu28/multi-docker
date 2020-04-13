@@ -18,3 +18,15 @@ after_success:
   - docker push laurentiulbg/multi-nginx
   - docker push laurentiulbg/multi-server
   - docker push laurentiulbg/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: eu-west-2
+  name: multi-docker
+  env: MultiDocker-env
+  bucket_name: elasticbeanstalk-eu-west-2-266186082637
+  bucket_path: docker-multi
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
